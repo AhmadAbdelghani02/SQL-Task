@@ -1,0 +1,50 @@
+
+CREATE DATABASE task;
+
+
+CREATE TABLE Students (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    date_of_birth DATE NOT NULL,
+    gender ENUM('Male', 'Female') NOT NULL,
+    major VARCHAR(100) NOT NULL,
+    enrollment_year YEAR NOT NULL
+);
+
+CREATE TABLE Courses (
+    course_id INT AUTO_INCREMENT PRIMARY KEY,
+    course_name VARCHAR(100) NOT NULL,
+    course_code VARCHAR(20) UNIQUE NOT NULL,
+    credits INT CHECK (credits > 0),
+    department VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Instructors (
+    instructor_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    hire_date DATE NOT NULL,
+    department VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Enrollments (
+    enrollment_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    grade CHAR(2) CHECK (grade IN ('A', 'B', 'C', 'D', 'F', 'W', 'I')),
+    FOREIGN KEY (student_id) REFERENCES Students(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE
+);
+
+CREATE TABLE Course_Assignments (
+    assignment_id INT AUTO_INCREMENT PRIMARY KEY,
+    instructor_id INT NOT NULL,
+    course_id INT NOT NULL,
+    semester ENUM('Spring', 'Summer', 'Fall', 'Winter') NOT NULL,
+    year YEAR NOT NULL,
+    FOREIGN KEY (instructor_id) REFERENCES Instructors(instructor_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE
+);
