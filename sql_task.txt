@@ -169,3 +169,50 @@ GROUP BY C.course_id;
 
 
 /////////////////////////////////////////////////////////////////////
+
+
+SELECT S.student_id, S.first_name, S.last_name, COUNT(E.course_id) AS course_count
+FROM Students S
+JOIN Enrollments E ON S.student_id = E.student_id
+JOIN Course_Assignments CA ON E.course_id = CA.course_id
+WHERE CA.semester = 'Fall' AND CA.year = 2024
+GROUP BY S.student_id
+HAVING COUNT(E.course_id) > 3;
+
+
+SELECT S.student_id, S.first_name, S.last_name, C.course_name, C.course_code, E.grade
+FROM Students S
+JOIN Enrollments E ON S.student_id = E.student_id
+JOIN Courses C ON E.course_id = C.course_id
+WHERE E.grade = 'I';
+
+
+SELECT S.student_id, S.first_name, S.last_name, 
+       AVG(CASE 
+             WHEN E.grade = 'A' THEN 4.0
+             WHEN E.grade = 'B' THEN 3.0
+             WHEN E.grade = 'C' THEN 2.0
+             WHEN E.grade = 'D' THEN 1.0
+             WHEN E.grade = 'F' THEN 0.0
+             ELSE NULL 
+           END) AS avg_gpa
+FROM Students S
+JOIN Enrollments E ON S.student_id = E.student_id
+GROUP BY S.student_id
+ORDER BY avg_gpa DESC
+LIMIT 1;
+
+
+SELECT C.department, COUNT(C.course_id) AS course_count
+FROM Courses C
+JOIN Course_Assignments CA ON C.course_id = CA.course_id
+WHERE CA.year = 2024
+GROUP BY C.department
+ORDER BY course_count DESC
+LIMIT 1;
+
+
+SELECT C.course_name, C.course_code
+FROM Courses C
+LEFT JOIN Enrollments E ON C.course_id = E.course_id
+WHERE E.student_id IS NULL;
