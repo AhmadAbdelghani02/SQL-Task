@@ -131,3 +131,41 @@ FROM Instructors
 WHERE department = 'Computer Science';
 
 ////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+SELECT C.course_name, C.course_code, COUNT(E.student_id) AS student_count
+FROM Courses C
+LEFT JOIN Enrollments E ON C.course_id = E.course_id
+GROUP BY C.course_id;
+
+SELECT S.first_name, S.last_name, C.course_name, C.course_code
+FROM Students S
+JOIN Enrollments E ON S.student_id = E.student_id
+JOIN Courses C ON E.course_id = C.course_id
+WHERE E.grade = 'A';
+
+SELECT C.course_name, C.course_code, I.first_name, I.last_name, CA.semester, CA.year
+FROM Courses C
+JOIN Course_Assignments CA ON C.course_id = CA.course_id
+JOIN Instructors I ON CA.instructor_id = I.instructor_id
+WHERE CA.semester = 'Fall';
+
+SELECT C.course_name, C.course_code, 
+       AVG(CASE 
+             WHEN E.grade = 'A' THEN 4.0
+             WHEN E.grade = 'B' THEN 3.0
+             WHEN E.grade = 'C' THEN 2.0
+             WHEN E.grade = 'D' THEN 1.0
+             WHEN E.grade = 'F' THEN 0.0
+             ELSE NULL 
+           END) AS average_gpa
+FROM Courses C
+JOIN Enrollments E ON C.course_id = E.course_id
+WHERE C.course_code = 'CS101'
+GROUP BY C.course_id;
+
+
+/////////////////////////////////////////////////////////////////////
