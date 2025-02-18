@@ -111,3 +111,23 @@ VALUES
 
 
 ////////////////////////////////////////////////////////////////
+
+
+
+SELECT * FROM Students;
+
+
+SELECT COUNT(*) AS total_courses FROM Courses;
+
+
+SELECT S.first_name, S.last_name 
+FROM Students S
+JOIN Enrollments E ON S.student_id = E.student_id
+JOIN Courses C ON E.course_id = C.course_id
+WHERE C.course_code = 'CS101';
+
+SELECT first_name, last_name, email 
+FROM Instructors 
+WHERE department = 'Computer Science';
+
+////////////////////////////////////////////////////////////////////////
