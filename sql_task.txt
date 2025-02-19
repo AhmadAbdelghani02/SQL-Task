@@ -330,3 +330,46 @@ DELIMITER ;
 
 CALL EnrollStudentIfCapacityAllows(3, 2);
 
+
+
+//////////////////////////////////////////////////
+
+SELECT 
+    Students.student_id, 
+    Students.first_name, 
+    Students.last_name, 
+    Courses.course_id, 
+    Courses.course_name 
+FROM Enrollments
+INNER JOIN Students ON Enrollments.student_id = Students.student_id
+INNER JOIN Courses ON Enrollments.course_id = Courses.course_id;
+
+
+
+SELECT 
+    Instructors.instructor_id, 
+    Instructors.first_name, 
+    Instructors.last_name, 
+    Courses.course_id, 
+    Courses.course_name 
+FROM Instructors
+LEFT JOIN Course_Assignments ON Instructors.instructor_id = Course_Assignments.instructor_id
+LEFT JOIN Courses ON Course_Assignments.course_id = Courses.course_id;
+
+
+
+SELECT 
+    student_id AS id, 
+    first_name, 
+    last_name, 
+    email, 
+    'Student' AS role 
+FROM Students
+UNION
+SELECT 
+    instructor_id AS id, 
+    first_name, 
+    last_name, 
+    email, 
+    'Instructor' AS role 
+FROM Instructors;
