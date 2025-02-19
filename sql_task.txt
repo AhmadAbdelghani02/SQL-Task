@@ -216,3 +216,63 @@ SELECT C.course_name, C.course_code
 FROM Courses C
 LEFT JOIN Enrollments E ON C.course_id = E.course_id
 WHERE E.student_id IS NULL;
+
+
+
+////////////////////////////////////////////////////////
+
+DELIMITER //
+
+CREATE FUNCTION CalculateAge(dob DATE) RETURNS INT
+DETERMINISTIC
+BEGIN
+    RETURN TIMESTAMPDIFF(YEAR, dob, CURDATE());
+END //
+
+DELIMITER ;
+
+
+
+
+SELECT first_name, last_name, CalculateAge(date_of_birth) AS age FROM Students;
+
+
+
+//////////////////////////////////////////////////////
+
+DELIMITER //
+
+CREATE PROCEDURE EnrollStudent(
+    IN studentID INT,
+    IN courseID INT,
+    IN studentGrade CHAR(2)
+)
+BEGIN
+    INSERT INTO Enrollments (student_id, course_id, grade)
+    VALUES (studentID, courseID, studentGrade);
+END //
+
+DELIMITER ;
+
+
+
+
+CALL EnrollStudent(1, 3, 'B');
+
+
+
+/////////////////////////////////////////////////////////////
+
+
+SELECT C.department, 
+       AVG(CASE 
+             WHEN E.grade = 'A' THEN 4.0
+             WHEN E.grade = 'B' THEN 3.0
+             WHEN E.grade = 'C' THEN 2.0
+             WHEN E.grade = 'D' THEN 1.0
+             WHEN E.grade = 'F' THEN 0.0
+             ELSE NULL 
+           END) AS average_gpa
+FROM Courses C
+JOIN Enrollments E ON C.course_id = E.course_id
+GROUP BY C.department;
