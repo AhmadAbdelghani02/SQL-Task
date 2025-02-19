@@ -276,3 +276,57 @@ SELECT C.department,
 FROM Courses C
 JOIN Enrollments E ON C.course_id = E.course_id
 GROUP BY C.department;
+
+
+/////////////////////////////////////////////////////////////////////
+
+ALTER TABLE Courses 
+ADD COLUMN capacity INT NOT NULL CHECK (capacity > 0);
+UPDATE Courses SET capacity = 30;
+
+
+
+
+DELIMITER //
+
+CREATE PROCEDURE EnrollStudentIfCapacityAllows(
+    IN studentID INT,
+    IN courseID INT
+)
+BEGIN
+    DECLARE current_enrollment INT;
+    DECLARE course_capacity INT;
+    
+    
+    START TRANSACTION;
+
+    
+    SELECT COUNT(*) INTO current_enrollment 
+    FROM Enrollments 
+    WHERE course_id = courseID;
+
+    
+    SELECT capacity INTO course_capacity 
+    FROM Courses 
+    WHERE course_id = courseID;
+
+    
+    IF current_enrollment < course_capacity THEN
+        -- Enroll the student
+        INSERT INTO Enrollments (student_id, course_id, grade)
+        VALUES (studentID, courseID, NULL);
+        
+        
+        COMMIT;
+    ELSE
+        
+        ROLLBACK;
+    END IF;
+END //
+
+DELIMITER ;
+
+
+
+CALL EnrollStudentIfCapacityAllows(3, 2);
+
